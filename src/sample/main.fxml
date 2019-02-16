@@ -53,7 +53,7 @@
                 <Label text="Obraz" GridPane.rowIndex="2" />
                 <Label accessibleText="Godzina zakończenia pracy" text="Dlugosc" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <Label text="Waga" GridPane.rowIndex="4" />
-                <TextField fx:id="autorTextField" GridPane.rowIndex="1" />
+                <TextField fx:id="autorTextField" GridPane.rowIndex="1" onKeyReleased="#authorEdited" />
                 <TextField fx:id="szerokoscTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <TextField fx:id="obrazTextField" GridPane.rowIndex="3" />
                 <TextField fx:id="wysokoscTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
@@ -62,7 +62,7 @@
         </GridPane>
     </right>
    <top>
-        <TableView fx:id="employeesTable" prefHeight="525.0" prefWidth="649.0" BorderPane.alignment="CENTER">
+        <TableView fx:id="masterpiecesTable" prefHeight="525.0" prefWidth="649.0" BorderPane.alignment="CENTER">
             <columns>
                 <TableColumn fx:id="autorColumn" prefWidth="100.0" text="Autor">
                     <cellValueFactory>

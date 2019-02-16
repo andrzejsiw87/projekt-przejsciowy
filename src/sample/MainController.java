@@ -7,6 +7,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -22,7 +23,7 @@ public class MainController {
     @FXML private TextField wysokoscTextField;
     @FXML private TextField wagaTextField;
 
-    @FXML private TableView<Masterpiece> employeesTable;
+    @FXML private TableView<Masterpiece> masterpiecesTable;
 
     private File openedFile;
 
@@ -30,11 +31,11 @@ public class MainController {
     public void initialize() {
 
         // dodajemy listener zaznaczenia rzędu w tabeli
-        employeesTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Masterpiece>() {
+        masterpiecesTable.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Masterpiece>() {
             @Override
             public void changed(ObservableValue<? extends Masterpiece> observable, Masterpiece oldValue, Masterpiece newValue) {
-                if (newValue != null) {
-                    MainController.this.onEmployeesRowSelect(newValue);
+                if (observable != null) {
+                    MainController.this.onEmployeesRowSelect(observable);
                 }
             }
         });
@@ -47,13 +48,13 @@ public class MainController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Otwórz plik z bazą pracowników");
         fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Masterpiece database file", "db"));
-        openedFile = fileChooser.showOpenDialog(employeesTable.getScene().getWindow());
+        openedFile = fileChooser.showOpenDialog(masterpiecesTable.getScene().getWindow());
 
         // ładujemy dane pracowników z pliku z użyciem osobnej klasy z metodą statyczną
         ObservableList<Masterpiece> masterpieces = FileDatabaseManager.loadEmployeesFromFile(openedFile);
         // ustawiamy załadowaną listę pracowników w TableView - mapowanie pól modelu do odpowiednich kolumn
         // zostało skonfigurowane w pliku fxml
-        employeesTable.setItems(masterpieces);
+        masterpiecesTable.setItems(masterpieces);
         // żeby po wczytaniu nowych danych stare nie zostawały w polach tekstowych
         clearTextFields();
     }
@@ -61,7 +62,7 @@ public class MainController {
     @FXML
     public void handleZapisz(ActionEvent actionEvent) {
         // pobieramy aktualnie wyświetlaną listę pracowników i zapisujemy ją w zapamiętanym wcześniej pliku
-        FileDatabaseManager.saveEmployeesToFile(employeesTable.getItems(), openedFile);
+        FileDatabaseManager.saveEmployeesToFile(masterpiecesTable.getItems(), openedFile);
     }
 
     @FXML
@@ -70,7 +71,7 @@ public class MainController {
         Masterpiece newMasterpiece = getEmployeeFromTextFields();
         // jeśli nowy obiekt nie jest nullem - dodajemy go do modelu tabeli
         if (newMasterpiece != null) {
-            employeesTable.getItems().add(newMasterpiece);
+            masterpiecesTable.getItems().add(newMasterpiece);
         }
     }
 
@@ -81,9 +82,9 @@ public class MainController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Zapisz raport w pliku");
         fileChooser.setInitialFileName(createReportFileName());
-        File reportFile = fileChooser.showSaveDialog(employeesTable.getScene().getWindow());
+        File reportFile = fileChooser.showSaveDialog(masterpiecesTable.getScene().getWindow());
 
-        FileDatabaseManager.saveEmployeesReport(employeesTable.getItems(), reportFile);
+        FileDatabaseManager.saveEmployeesReport(masterpiecesTable.getItems(), reportFile);
     }
 
     // tworzymy nazwę pliku zawierającą datę, żeby była w miarę unikalna
@@ -118,7 +119,10 @@ public class MainController {
     }
 
     // funkcja wywoływana w listenerze zaznaczenia rzędu w tabeli - ustawiamy wartości pól tekstowych
-    private void onEmployeesRowSelect(Masterpiece selectedMasterpiece) {
+    private void onEmployeesRowSelect(ObservableValue<? extends Masterpiece> observable) {
+
+        Masterpiece selectedMasterpiece = observable.getValue();
+
         autorTextField.setText(selectedMasterpiece.getAuthor());
         obrazTextField.setText(selectedMasterpiece.getPicture());
         wagaTextField.setText(String.valueOf(selectedMasterpiece.getWeight()));
@@ -135,14 +139,20 @@ public class MainController {
     }
 
     public void sortByAuthor(ActionEvent actionEvent) {
-        employeesTable.getItems().sort(Comparator.comparing(Masterpiece::getAuthor));
+        masterpiecesTable.getItems().sort(Comparator.comparing(Masterpiece::getAuthor));
     }
 
     public void sortByWeight(ActionEvent actionEvent) {
-        employeesTable.getItems().sort(Comparator.comparing(Masterpiece::getWeight));
+        masterpiecesTable.getItems().sort(Comparator.comparing(Masterpiece::getWeight));
     }
 
     public void sortByArea(ActionEvent actionEvent) {
-        employeesTable.getItems().sort(Comparator.comparing(Masterpiece::getArea));
+        masterpiecesTable.getItems().sort(Comparator.comparing(Masterpiece::getArea));
+    }
+
+    public void authorEdited(KeyEvent keyEvent) {
+        Masterpiece selectedItem = masterpiecesTable.getSelectionModel().getSelectedItem();
+        selectedItem.setAuthor(autorTextField.getText());
+        masterpiecesTable.refresh();
     }
 }

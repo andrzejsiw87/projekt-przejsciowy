@@ -40,4 +40,23 @@ public class Masterpiece {
         return height * width;
     }
 
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
 }
