@@ -1,0 +1,8 @@
+Jan Kowalski1 12A 9 17
+Jan Kowalski2 5 8 16
+Jan Kowalski3 345 10 14
+Jan Kowalski4 23 10 18
+Jan Kowalski5 223245 6 16
+Jan Kowalski6 q3e 9 17
+Jan Kowalski7 BB 9 17
+Jan Kowalski 10 10 10 16
