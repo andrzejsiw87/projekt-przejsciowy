@@ -2,7 +2,10 @@ package sample;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
@@ -17,6 +20,7 @@ import java.util.Comparator;
 
 public class MainController {
 
+    @FXML private TextField autorFilterTextField;
     @FXML private TextField autorTextField;
     @FXML private TextField szerokoscTextField;
     @FXML private TextField obrazTextField;
@@ -26,6 +30,7 @@ public class MainController {
     @FXML private TableView<Masterpiece> masterpiecesTable;
 
     private File openedFile;
+    private ObservableList<Masterpiece> masterpieces = FXCollections.observableArrayList();
 
     // metoda która jest automatycznie wywoływana przez JavaFX - w niej możemy np. ustawiać różne listenery
     public void initialize() {
@@ -39,6 +44,8 @@ public class MainController {
                 }
             }
         });
+
+
     }
 
     // handler wciśnięcia przycisku 'Wczytaj' ustawiony w pliku fxml
@@ -50,11 +57,38 @@ public class MainController {
         fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Masterpiece database file", "db"));
         openedFile = fileChooser.showOpenDialog(masterpiecesTable.getScene().getWindow());
 
+        // czyscimy dane z poporzedniego pliku (jesli sa)
+        masterpieces.clear();
         // ładujemy dane pracowników z pliku z użyciem osobnej klasy z metodą statyczną
-        ObservableList<Masterpiece> masterpieces = FileDatabaseManager.loadEmployeesFromFile(openedFile);
-        // ustawiamy załadowaną listę pracowników w TableView - mapowanie pól modelu do odpowiednich kolumn
-        // zostało skonfigurowane w pliku fxml
-        masterpiecesTable.setItems(masterpieces);
+        masterpieces.addAll(FileDatabaseManager.loadEmployeesFromFile(openedFile));
+
+        // opakowujemy liste w liste filtrowalna
+        FilteredList<Masterpiece> filteredData = new FilteredList<>(masterpieces, m -> true);
+        // opakowujemy liste w liste sortowalna
+        SortedList<Masterpiece> sortedData = new SortedList<>(filteredData);
+        // ustawiamy opakowana liste jako zrodlo danych w tableview
+        masterpiecesTable.setItems(sortedData);
+
+        // dodajemy listener zmiany wartosci pola filtrujacego
+        autorFilterTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(masterpiece -> { // wykonywane dla kazdego elementu listy
+
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // sprowadzamy wartosc filtra do malych liter, zeby porownac bez wzgledu na wielkosc liter
+                String lowerCaseFilter = newValue.toLowerCase();
+                // sprowadzamy nazwisko autora do malych liter
+                String author = masterpiece.getAuthor().toLowerCase();
+                if (author.startsWith(lowerCaseFilter)) {
+                    return true; // znaleziono dopasowanie
+                }
+                return false;
+            });
+        });
+
+
         // żeby po wczytaniu nowych danych stare nie zostawały w polach tekstowych
         clearTextFields();
     }
@@ -139,15 +173,18 @@ public class MainController {
     }
 
     public void sortByAuthor(ActionEvent actionEvent) {
-        masterpiecesTable.getItems().sort(Comparator.comparing(Masterpiece::getAuthor));
+        SortedList<Masterpiece> items = (SortedList<Masterpiece>) masterpiecesTable.getItems();
+        items.setComparator(Comparator.comparing(Masterpiece::getAuthor));
     }
 
     public void sortByWeight(ActionEvent actionEvent) {
-        masterpiecesTable.getItems().sort(Comparator.comparing(Masterpiece::getWeight));
+        SortedList<Masterpiece> items = (SortedList<Masterpiece>) masterpiecesTable.getItems();
+        items.setComparator(Comparator.comparing(Masterpiece::getWeight));
     }
 
     public void sortByArea(ActionEvent actionEvent) {
-        masterpiecesTable.getItems().sort(Comparator.comparing(Masterpiece::getArea));
+        SortedList<Masterpiece> items = (SortedList<Masterpiece>) masterpiecesTable.getItems();
+        items.setComparator(Comparator.comparing(Masterpiece::getArea));
     }
 
     public void authorEdited(KeyEvent keyEvent) {

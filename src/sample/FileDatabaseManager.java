@@ -10,15 +10,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
 public class FileDatabaseManager {
 
-    public static ObservableList<Masterpiece> loadEmployeesFromFile(File file) {
+    public static List<Masterpiece> loadEmployeesFromFile(File file) {
 
-        ObservableList<Masterpiece> masterpieces = FXCollections.observableArrayList();
+        List<Masterpiece> masterpieces = new ArrayList<>();
 
         try (Scanner scanner = new Scanner(new BufferedReader(new FileReader(file)))) {
 

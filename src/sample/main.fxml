@@ -62,39 +62,44 @@
         </GridPane>
     </right>
    <top>
-        <TableView fx:id="masterpiecesTable" prefHeight="525.0" prefWidth="649.0" BorderPane.alignment="CENTER">
-            <columns>
-                <TableColumn fx:id="autorColumn" prefWidth="100.0" text="Autor">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="author" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn fx:id="obrazColumn" prefWidth="150.0" text="Obraz">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="picture" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn fx:id="wagaColumn" prefWidth="75.0" text="Waga">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="weight" />
-                    </cellValueFactory>
-                </TableColumn>
-                <TableColumn prefWidth="106.0" text="Wysokosc">
-                    <cellValueFactory>
-                        <PropertyValueFactory property="width" />
-                    </cellValueFactory>
-                </TableColumn>
-            <TableColumn prefWidth="75.0" text="Dlugosc">
-                <cellValueFactory>
-                    <PropertyValueFactory property="height" />
-                </cellValueFactory>
-            </TableColumn>
-            <TableColumn fx:id="powierzchniaColumn" prefWidth="114.0" text="Powierzchnia">
-                <cellValueFactory>
-                    <PropertyValueFactory property="area" />
-                </cellValueFactory>
-            </TableColumn>
-            </columns>
-        </TableView>
+       <VBox>
+           <children>
+               <TextField fx:id="autorFilterTextField" />
+                <TableView fx:id="masterpiecesTable" prefHeight="525.0" prefWidth="649.0" BorderPane.alignment="CENTER">
+                    <columns>
+                        <TableColumn fx:id="autorColumn" prefWidth="100.0" text="Autor">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="author" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="obrazColumn" prefWidth="150.0" text="Obraz">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="picture" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn fx:id="wagaColumn" prefWidth="75.0" text="Waga">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="weight" />
+                            </cellValueFactory>
+                        </TableColumn>
+                        <TableColumn prefWidth="106.0" text="Wysokosc">
+                            <cellValueFactory>
+                                <PropertyValueFactory property="width" />
+                            </cellValueFactory>
+                        </TableColumn>
+                    <TableColumn prefWidth="75.0" text="Dlugosc">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="height" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn fx:id="powierzchniaColumn" prefWidth="114.0" text="Powierzchnia">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="area" />
+                        </cellValueFactory>
+                    </TableColumn>
+                    </columns>
+                </TableView>
+           </children>
+       </VBox>
    </top>
 </BorderPane>
